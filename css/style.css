@@ -1,0 +1,39 @@
+
+    /* Some basic formatting */
+    
+    .container {
+      padding-top: 2em;
+    }
+    /* .ui.dividing.header,
+    .first {
+      margin-top: 5em;
+    } */
+    
+    
+    img {
+      display: block;
+      max-width: 100%;
+    }
+    img + img {
+      margin-top: 0.5em;
+    }
+    
+    pre {
+        overflow-x: auto;
+    }
+   
+    .muted {
+        color: rgb(107, 107, 107);
+    }
+
+    .codeblock {
+        padding: 0 !important;
+    }
+    .codeblock pre {
+        margin: 0 !important;
+    }
+    .codeblock .header {
+        padding: 1rem;
+        margin-bottom: 0 !important;
+        border-bottom: 1px solid #ccc;
+    }

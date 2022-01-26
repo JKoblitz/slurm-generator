@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/3e797dbce9.js" crossorigin="anonymous"></script>
+    <!-- Semantic CSS -->
+    <link rel="stylesheet" type="text/css" href="css/semantic.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/default.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <title>Slurm Generator</title>
+
+</head>
+
+<body>
+
+    <div class="ui container">
+        <h1 class="ui dividing header">SLURM Script Generator</h1>
+
+    </div>
+
+    <div class="ui container">
+
+        <div class="ui grid">
+            <div class="eight wide column">
+                <h4 class="ui teal dividing header">Generate SLURM script:</h4>
+                <form class="ui form" id="single">
+                    <div class="grouped fields">
+                        <label for="queue">Select queue:</label>
+                        <!-- Queues depend on your SLURM configuration -->
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="queue" checked="" tabindex="0" class="hidden"
+                                    value="ultrashort">
+                                <label>ultrashort (1 hour)</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="queue" tabindex="0" class="hidden" value="short">
+                                <label>short (6 hour)</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="queue" tabindex="0" class="hidden" value="mid">
+                                <label>mid (2 days)</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="queue" tabindex="0" class="hidden" value="long">
+                                <label>long (4 days)</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="queue" tabindex="0" class="hidden" value="ultralong">
+                                <label>ultralong (8 days)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="required field">
+                        <label>Command</label>
+                        <textarea rows="2" name="cmd"></textarea>
+                    </div>
+
+                    <div class="two fields">
+                        <div class="required field">
+                            <label>CPU</label>
+                            <div class="ui right labeled input">
+                                <input type="text" name="cores" min="1" max="16">
+                                <div class="ui label">
+                                    cores
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="required field">
+                            <label>Memory</label>
+                            <div class="ui right labeled input">
+                                <input type="text" name="memory" min="1" max="256">
+                                <div class="ui label">
+                                    GB
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>Output file</label>
+                            <input type="text" name="output" placeholder="Output file">
+                        </div>
+                        <div class="field">
+                            <label>Error file</label>
+                            <input type="text" name="error" placeholder="Error file">
+                        </div>
+                    </div>
+
+                    <div class="two fields">
+
+                        <div class="field">
+                            <label for="mail">Notify by mail</label>
+                            <select class="ui compact selection dropdown" name="mailtype">
+                                <option selected="" value="never">never</option>
+                                <option value="end">on end</option>
+                                <option value="fail">on fail</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <!-- Replace by mail -->
+                            <label for="mail">User name (for mail)</label>
+                            <input type="text" name="mail" placeholder="User name">
+                        </div>
+                    </div>
+
+
+                    <div class="ui accordion">
+                        <div class="title">
+
+                            <h4 class="ui yellow dividing header"><i class="dropdown icon"></i> Generate wrapper
+                                (optional):</h4>
+                        </div>
+                        <div class="content">
+                            <div class="transition" style="display: block !important;">
+                                <div class="message ui">
+                                    <p>
+                                        You can create a wrapper script to start multiple slurm jobs on many input
+                                        files.
+                                        If you want to refer to the input file, use <code>$1</code> in your SLURM
+                                        command to do this.
+                                        If you generate output or error files, do not forget to include the current
+                                        iterator in the filename (e.g. <code>output/slurm_%j.out</code>),
+                                        so that files are not overwritten.
+                                    </p>
+                                    <p>
+                                        Leave the input path field empty, if you don't want to generate a wrapper
+                                        script.
+                                    </p>
+                                </div>
+                                <div class="field">
+                                    <label for="input">Input path</label>
+                                    <input type="text" name="input" placeholder="~/input/*">
+                                </div>
+                                <div class="two fields">
+
+                                    <div class="field">
+                                        <label for="skip">Skip if output file exists</label>
+                                        <input type="text" name="skip" placeholder="~/output/*.tsv">
+                                    </div>
+                                    <div class="field">
+                                        <label for="mail"><i class="fas fa-arrow-left"></i> Asterisk (*) stands
+                                            for:</label>
+                                        <select class="ui compact selection dropdown" name="asterisk">
+                                            <option value="full" selected>full path (e.g. path/filename.txt.gz)</option>
+                                            <option value="basename">filename (e.g. filename.txt.gz)</option>
+                                            <option value="base">basename without last extension (e.g. filename.txt)
+                                            </option>
+                                            <option value="without">basename without all extension (e.g. filename)
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="message ui yellow">
+                                    <p>
+                                        <i class="fas red fa-exclamation-triangle"></i> <strong>Attention!</strong> If
+                                        you have a large number of files,
+                                        please consider to run them one after another by limiting the number of parallel
+                                        jobs.
+                                    </p>
+                                </div>
+                                <div class="field">
+                                    <label for="groups">Max. number of parallel jobs</label>
+                                    <input type="number" name="groups">
+                                    <small class="muted">
+                                        Leave empty if all jobs should run at the same time
+                                    </small>
+                                </div>
+                                <div class="inline field">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="abort" tabindex="0" class="hidden">
+                                        <label>Test run </label>
+                                        <small class="muted">
+                                            The script will abort after one job is submitted. If you limited the number
+                                            of parallel jobs, one job per group is submitted.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="ui error message"></div>
+                    <div class="ui primary submit button">Submit</div>
+                </form>
+
+            </div>
+            <div class="eight wide column">
+                <div class="ui teal segment codeblock" id="code-single">
+                    <div class="ui medium header"><code>slurm_script.sh</code></div>
+                    <pre><code class="code bash"></code></pre>
+                </div>
+                <div class="ui yellow segment codeblock" id="code-multi">
+                    <div class="ui medium header"><code>run_slurm.sh</code></div>
+                    <pre><code class="code bash"></code></pre>
+                </div>
+                <div class="ui green segment codeblock" id="code-caller">
+                    <div class="ui medium header">Call from the cmd line</div>
+                    <pre><code class="code bash"></code></pre>
+                </div>
+                <div class="ui segment" id="hello-world">
+                    <div class="ui medium header">To whom you can complain</div>
+                    <p>
+                        This tool was produced by <a href="mailto:julia.koblitz@dsmz.de"><i class="fas fa-envelope"></i>
+                            Julia Koblitz</a>.
+                        I give no guarantee that it works in the way you expect.
+                        Nonetheless, do not hesistate to come back to me, if you have any questions or useful feedback.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
+<script src="js/semantic.min.js"></script>
+<script src="js/script.js"></script>
+
+</html>
